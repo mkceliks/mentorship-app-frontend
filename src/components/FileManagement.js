@@ -1,5 +1,3 @@
-// src/components/FileManagement.js
-
 import React, { useEffect, useState } from "react";
 import { listFiles, downloadFile, uploadFile, deleteFile } from "../api/s3Api";
 import './FileManagement.css';
