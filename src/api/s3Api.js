@@ -25,3 +25,11 @@ export const uploadFile = async (file) => {
     if (!response.ok) throw new Error("Failed to upload file");
     return response.json();
 };
+
+export const deleteFile = async (fileKey) => {
+    const response = await fetch(`${API_BASE_URL}/delete?key=${fileKey}`, {
+        method: "DELETE",
+    });
+    if (!response.ok) throw new Error("Failed to delete file");
+    return response.json();
+};

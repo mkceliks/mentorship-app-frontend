@@ -1,14 +1,13 @@
 // src/components/FileManagement.js
 
 import React, { useEffect, useState } from "react";
-import { listFiles, downloadFile, uploadFile } from "../api/s3Api";
+import { listFiles, downloadFile, uploadFile, deleteFile } from "../api/s3Api";
 import './FileManagement.css';
 
 function FileManagement() {
     const [files, setFiles] = useState([]);
     const [selectedFile, setSelectedFile] = useState(null);
 
-    // Fetch file list on component mount
     useEffect(() => {
         fetchFiles();
     }, []);
@@ -35,6 +34,16 @@ function FileManagement() {
             window.URL.revokeObjectURL(url);
         } catch (error) {
             console.error("Error downloading file:", error);
+        }
+    };
+
+    const handleDelete = async (fileKey) => {
+        try {
+            await deleteFile(fileKey);
+            alert("File deleted successfully!");
+            fetchFiles();
+        } catch (error) {
+            console.error("Error deleting file:", error);
         }
     };
 
@@ -67,6 +76,7 @@ function FileManagement() {
                     <li key={file.key}>
                         {file.key} ({file.size} bytes)
                         <button onClick={() => handleDownload(file.key)}>Download</button>
+                        <button className="delete" onClick={() => handleDelete(file.key)}>Delete</button> {/* Add class here */}
                     </li>
                 ))}
             </ul>
