@@ -7,7 +7,7 @@ import { handleFileChange } from "./handlers/handleFileChange";
 import './FileManagement.css';
 
 function FileManagement() {
-    const [files, setFiles] = useState([]);
+    const [files, setFiles] = useState([]); 
     const [selectedFile, setSelectedFile] = useState(null);
     const [loading, setLoading] = useState(false);
 
@@ -25,15 +25,19 @@ function FileManagement() {
             {loading && <p>Loading...</p>}
 
             <h2>Files in Bucket</h2>
-            <ul>
-                {files.map((file) => (
-                    <li key={file.key}>
-                        {file.key} ({file.size} bytes)
-                        <button onClick={() => handleDownload(file.key)}>Download</button>
-                        <button className="delete" onClick={() => handleDelete(file.key, setFiles)}>Delete</button>
-                    </li>
-                ))}
-            </ul>
+            {files && files.length > 0 ? ( 
+                <ul>
+                    {files.map((file) => (
+                        <li key={file.key}>
+                            {file.key} ({file.size} bytes)
+                            <button onClick={() => handleDownload(file.key)}>Download</button>
+                            <button className="delete" onClick={() => handleDelete(file.key, setFiles)}>Delete</button>
+                        </li>
+                    ))}
+                </ul>
+            ) : (
+                <p>No files available.</p>
+            )}
             <hr />
 
             <h2>Upload a File</h2>
