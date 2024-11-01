@@ -1,5 +1,5 @@
 import React from "react";
-import FileManagement from "./components/FileManagement";
+import FileManagement from "./components/FileManagement/FileManagement";
 import './App.css';
 
 function App() {
