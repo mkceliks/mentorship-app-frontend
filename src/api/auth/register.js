@@ -1,6 +1,6 @@
 import API_BASE_URL from "../../utils/config";
 
-export const registerUser = async (email, password, profilePictureBase64) => {
+export const registerUser = async (email, password, profile_picture) => {
     const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
@@ -9,7 +9,7 @@ export const registerUser = async (email, password, profilePictureBase64) => {
         body: JSON.stringify({
             email,
             password,
-            profilePictureBase64
+            profile_picture
         }),
     });
 
