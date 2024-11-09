@@ -10,19 +10,19 @@ function Register() {
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
-    const handleProfilePictureChange = (e) => {
+    const handleProfilePictureChange = async (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFileName(file.name); // Set file name
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                const base64Content = reader.result.split(",")[1]; // Get base64 part
-                setProfilePicture(base64Content);
-            };
-            reader.readAsDataURL(file);
+            setFileName(file.name);
+            try {
+                const base64Content = await toBase64(file);
+                setProfilePicture(base64Content.split(",")[1]);
+            } catch (error) {
+                console.error("Error converting file to base64:", error);
+            }
         }
     };
-    
+
     const handleSubmit = async () => {
         if (!email || !password || !profilePicture) {
             setMessage("All fields, including profile picture, are required.");
@@ -71,5 +71,13 @@ function Register() {
         </div>
     );
 }
+
+const toBase64 = (file) =>
+    new Promise((resolve, reject) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(file);
+        reader.onload = () => resolve(reader.result);
+        reader.onerror = (error) => reject(error);
+    });
 
 export default Register;

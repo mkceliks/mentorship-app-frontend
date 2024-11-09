@@ -10,7 +10,7 @@ export const registerUser = async (email, password, profile_picture, file_name) 
             email,
             password,
             profile_picture,
-            file_name        
+            file_name         
         }),
     });
 
