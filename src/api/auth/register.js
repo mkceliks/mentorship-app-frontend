@@ -3,12 +3,15 @@ import API_BASE_URL from "../../utils/config";
 export const registerUser = async (email, password, selectedFileData) => {
     const { file, base64File } = selectedFileData;
 
+    console.log(base64File.split(',')[1])
+
     const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
             "Content-Type": "application/json",
             "x-file-content-type": file.type,
         },
+        
         body: JSON.stringify({
             email,
             password,
