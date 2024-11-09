@@ -13,7 +13,7 @@ export const registerUser = async (email, password, file) => {
             email,
             password,
             file_name: file.name,
-            file_content: base64File.split(',')[1],
+            profile_picture: base64File.split(',')[1],
         }),
     });
 
