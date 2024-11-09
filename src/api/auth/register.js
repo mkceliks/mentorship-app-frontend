@@ -1,6 +1,6 @@
 import API_BASE_URL from "../../utils/config";
 
-export const registerUser = async (email, password, profile_picture) => {
+export const registerUser = async (email, password, profile_picture, file_name) => {
     const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
         headers: {
@@ -9,12 +9,14 @@ export const registerUser = async (email, password, profile_picture) => {
         body: JSON.stringify({
             email,
             password,
-            profile_picture
+            file_name,             
+            file_content: profile_picture
         }),
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to register. Status: ${response.status} ${response.statusText}`);
+        const errorText = await response.text();
+        throw new Error(`Failed to register: ${response.status} ${response.statusText} - ${errorText}`);
     }
 
     return response.json();

@@ -6,28 +6,33 @@ function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [profilePicture, setProfilePicture] = useState(null);
+    const [fileName, setFileName] = useState("");
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleProfilePictureChange = (e) => {
         const file = e.target.files[0];
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            setProfilePicture(reader.result.split(",")[1]);
-        };
-        
         if (file) {
+            setFileName(file.name); 
+            const reader = new FileReader();
+            reader.onloadend = () => {
+                setProfilePicture(reader.result.split(",")[1]); 
+            };
             reader.readAsDataURL(file);
         }
     };
 
     const handleSubmit = async () => {
+        if (!email || !password || !profilePicture) {
+            setMessage("All fields, including profile picture, are required.");
+            return;
+        }
+
         setLoading(true);
         setMessage("");
 
         try {
-            await handleRegister(email, password, profilePicture, setMessage);
+            await handleRegister(email, password, profilePicture, fileName, setMessage);
         } catch (error) {
             setMessage(error.message || "An error occurred. Please try again.");
         } finally {
