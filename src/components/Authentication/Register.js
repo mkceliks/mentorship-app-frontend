@@ -10,7 +10,7 @@ function Register() {
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async () => {
-        if (!email || !password || !profilePicture) {
+        if (!email || !password || !selectedFile) {
             setMessage("All fields, including profile picture, are required.");
             return;
         }
@@ -19,7 +19,7 @@ function Register() {
         setMessage("");
 
         try {
-            await handleRegister(email, password, profilePicture, fileName, setMessage);
+            await handleRegister(email, password, selectedFile, setMessage);
         } catch (error) {
             setMessage(error.message || "An error occurred. Please try again.");
         } finally {
@@ -50,7 +50,7 @@ function Register() {
                 onChange={handleProfilePictureChange}
                 disabled={loading}
             />
-            <button onClick={() => handleUpload(email, password, selectedFile)} disabled={loading}>
+            <button onClick={() => handleSubmit(email, password, selectedFile)} disabled={loading}>
                 {loading ? "Uploading..." : "Upload"}
             </button>
             <p>{message}</p>

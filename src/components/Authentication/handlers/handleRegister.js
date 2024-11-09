@@ -1,6 +1,6 @@
 import { registerUser } from "../../../api/auth/register";
 
-export const handleRegister = async (email, password, selectedFile) => {
+export const handleRegister = async (email, password, selectedFile, setMessage) => {
     if (!selectedFile) {
         alert("Please select a file to upload.");
         return;
