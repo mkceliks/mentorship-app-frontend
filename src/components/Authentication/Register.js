@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { handleRegister } from "./handlers/handleRegister";
+import { handleFileChange } from "./handlers/handleFileChange";
 import "./Authentication.css";
 
 function Register() {
@@ -44,12 +45,7 @@ function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
             />
-            <input
-                type="file"
-                accept="image/*"
-                onChange={handleProfilePictureChange}
-                disabled={loading}
-            />
+            <input type="file" onChange={(e) => handleFileChange(e, setSelectedFile)} />
             <button onClick={() => handleSubmit(email, password, selectedFile)} disabled={loading}>
                 {loading ? "Uploading..." : "Upload"}
             </button>
