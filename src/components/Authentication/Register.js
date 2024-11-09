@@ -5,23 +5,9 @@ import "./Authentication.css";
 function Register() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [profilePicture, setProfilePicture] = useState(null);
-    const [fileName, setFileName] = useState("");
+    const [selectedFile, setSelectedFile] = useState(null);
     const [message, setMessage] = useState("");
     const [loading, setLoading] = useState(false);
-
-    const handleProfilePictureChange = async (e) => {
-        const file = e.target.files[0];
-        if (file) {
-            setFileName(file.name);
-            try {
-                const base64Content = await toBase64(file);
-                setProfilePicture(base64Content.split(",")[1]);
-            } catch (error) {
-                console.error("Error converting file to base64:", error);
-            }
-        }
-    };
 
     const handleSubmit = async () => {
         if (!email || !password || !profilePicture) {
@@ -64,20 +50,12 @@ function Register() {
                 onChange={handleProfilePictureChange}
                 disabled={loading}
             />
-            <button onClick={handleSubmit} disabled={loading}>
-                {loading ? "Processing..." : "Register"}
+            <button onClick={() => handleUpload(email, password, selectedFile)} disabled={loading}>
+                {loading ? "Uploading..." : "Upload"}
             </button>
             <p>{message}</p>
         </div>
     );
 }
-
-const toBase64 = (file) =>
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });
 
 export default Register;
