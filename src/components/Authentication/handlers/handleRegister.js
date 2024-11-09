@@ -7,7 +7,7 @@ export const handleRegister = async (email, password, selectedFile, setMessage) 
     }
 
     try {
-        const response = await registerUser(email, password,selectedFile);
+        const response = await registerUser(email, password, selectedFile);
 
         if (response.ok) {
             setMessage("Registration successful! Please log in.");

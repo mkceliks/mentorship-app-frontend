@@ -1,7 +1,7 @@
 import API_BASE_URL from "../../utils/config";
 
-export const registerUser = async (email, password, file) => {
-    const base64File = await toBase64(file);
+export const registerUser = async (email, password, selectedFileData) => {
+    const { file, base64File } = selectedFileData;
 
     const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",
@@ -23,11 +23,3 @@ export const registerUser = async (email, password, file) => {
 
     return response;
 };
-
-const toBase64 = (file) => 
-    new Promise((resolve, reject) => {
-        const reader = new FileReader();
-        reader.readAsDataURL(file);
-        reader.onload = () => resolve(reader.result);
-        reader.onerror = (error) => reject(error);
-    });

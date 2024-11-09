@@ -45,9 +45,13 @@ function Register() {
                 onChange={(e) => setPassword(e.target.value)}
                 disabled={loading}
             />
-            <input type="file" onChange={(e) => handleFileChange(e, setSelectedFile)} />
-            <button onClick={() => handleSubmit(email, password, selectedFile)} disabled={loading}>
-                {loading ? "Uploading..." : "Upload"}
+            <input
+                type="file"
+                onChange={(e) => handleFileChange(e, setSelectedFile)}
+                disabled={loading}
+            />
+            <button onClick={handleSubmit} disabled={loading}>
+                {loading ? "Uploading..." : "Register"}
             </button>
             <p>{message}</p>
         </div>
