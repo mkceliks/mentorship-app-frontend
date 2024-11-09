@@ -13,15 +13,16 @@ function Register() {
     const handleProfilePictureChange = (e) => {
         const file = e.target.files[0];
         if (file) {
-            setFileName(file.name); 
+            setFileName(file.name); // Set file name
             const reader = new FileReader();
             reader.onloadend = () => {
-                setProfilePicture(reader.result.split(",")[1]); 
+                const base64Content = reader.result.split(",")[1]; // Get base64 part
+                setProfilePicture(base64Content);
             };
             reader.readAsDataURL(file);
         }
     };
-
+    
     const handleSubmit = async () => {
         if (!email || !password || !profilePicture) {
             setMessage("All fields, including profile picture, are required.");

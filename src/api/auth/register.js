@@ -9,7 +9,8 @@ export const registerUser = async (email, password, profile_picture, file_name) 
         body: JSON.stringify({
             email,
             password,
-            profile_picture: profile_picture
+            profile_picture,
+            file_name        
         }),
     });
 
