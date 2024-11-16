@@ -1,6 +1,6 @@
 import API_BASE_URL, { saveTokens } from "../../../utils/config";
 
-export const handleLogin = async (email, password, setMessage) => {
+export const handleLogin = async (email, password) => {
     try {
         const response = await fetch(`${API_BASE_URL}/login`, {
             method: "POST",
@@ -16,9 +16,8 @@ export const handleLogin = async (email, password, setMessage) => {
 
         const tokens = await response.json();
         saveTokens(tokens);
-        setMessage("Login successful!");
-    } catch (error) {
+        } catch (error) {
         console.error("Login error:", error);
-        setMessage("Login failed. Please check your credentials.");
+        return error;
     }
 };

@@ -1,4 +1,5 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL;
+const API_BASE_URL =
+  process.env.REACT_APP_API_URL?.trim() || "https://f5km4eeg40.execute-api.us-east-1.amazonaws.com/staging";
 
 export default API_BASE_URL;
 
