@@ -1,4 +1,4 @@
-const API_BASE_URL = process.env.REACT_APP_API_URL
+const API_BASE_URL = process.env.REACT_APP_API_URL;
 
 export default API_BASE_URL;
 
@@ -9,6 +9,10 @@ export const saveTokens = (tokens) => {
 };
 
 export const getAccessToken = () => localStorage.getItem("access_token");
+
+export const getIdToken = () => localStorage.getItem("id_token");
+
+export const getRefreshToken = () => localStorage.getItem("refresh_token");
 
 export const clearTokens = () => {
     localStorage.removeItem("access_token");

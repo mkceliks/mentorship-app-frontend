@@ -1,9 +1,13 @@
-import API_BASE_URL from "../../utils/config";
+import fetchWithAuth from "../../utils/fetchWithAuth";
 
 export const listFiles = async () => {
-    const response = await fetch(`${API_BASE_URL}/list`);
-    if (!response.ok) throw new Error("Failed to fetch file list");
-    return response.json();
+    try {
+        const response = await fetchWithAuth("/list");
+        return response;
+    } catch (error) {
+        console.error("Error fetching file list:", error);
+        throw new Error("Failed to fetch file list");
+    }
 };
 
 export const fetchFiles = async () => {
