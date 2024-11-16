@@ -10,6 +10,8 @@ export const saveTokens = (tokens) => {
 
 export const getAccessToken = () => localStorage.getItem("access_token");
 
+export const getIdToken = () => localStorage.getItem("id_token");
+
 export const getRefreshToken = () => localStorage.getItem("refresh_token");
 
 export const clearTokens = () => {

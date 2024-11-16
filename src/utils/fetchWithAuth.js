@@ -1,7 +1,7 @@
-import API_BASE_URL, { getAccessToken, getRefreshToken, saveTokens, clearTokens } from "./config";
+import API_BASE_URL, { getRefreshToken, saveTokens, clearTokens, getIdToken } from "./config";
 
 const fetchWithAuth = async (endpoint, options = {}) => {
-    let token = getAccessToken();
+    let token = getIdToken();
 
     const headers = {
         ...(options.headers || {}),
@@ -18,7 +18,7 @@ const fetchWithAuth = async (endpoint, options = {}) => {
         const newTokens = await refreshAuthToken();
         if (newTokens) {
             saveTokens(newTokens);
-            token = newTokens.access_token;
+            token = newTokens.id_token;
             const retryHeaders = {
                 ...(options.headers || {}),
                 "Content-Type": "application/json",
