@@ -24,7 +24,7 @@ export const registerUser = async (email, password, name, role, selectedFileData
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to register. Status: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to register. Status: ${response.status} ${response.body}`);
     }
 
     return response;

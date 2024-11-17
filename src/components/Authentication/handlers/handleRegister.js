@@ -17,12 +17,12 @@ export const handleRegister = async (email, password, name, role, selectedFile) 
         if (response.ok) {
             alert("Registration successful! Please log in.");
         } else {
-            const errorText = await response.text();
-            alert(`Failed to register: ${errorText}`);
+            const errorText = await response.body();
+            throw new Error(`Login failed: ${response.status} ${errorText}`);
         }
     } catch (error) {
         console.error("Error during registration:", error);
-        alert("Registration failed. Please try again.");
+        throw error;
     }
 };
 

@@ -1,18 +1,24 @@
-import * as React from 'react';
-import { alpha, styled } from '@mui/material/styles';
-import Box from '@mui/material/Box';
-import AppBar from '@mui/material/AppBar';
-import Toolbar from '@mui/material/Toolbar';
-import Button from '@mui/material/Button';
-import IconButton from '@mui/material/IconButton';
-import Container from '@mui/material/Container';
-import Divider from '@mui/material/Divider';
-import MenuItem from '@mui/material/MenuItem';
-import Drawer from '@mui/material/Drawer';
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
+import {
+  Box,
+  AppBar,
+  Toolbar,
+  Button,
+  IconButton,
+  Container,
+  Divider,
+  MenuItem,
+  Drawer,
+  Menu,
+  Avatar,
+} from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import CloseRoundedIcon from '@mui/icons-material/CloseRounded';
+import { alpha, styled } from '@mui/material/styles';
 import ColorModeIconDropdown from '../shared-theme/ColorModeIconDropdown';
-import { useNavigate } from 'react-router-dom';
+import { clearTokens, isAuthenticated } from '../../utils/config';
+import { handleFetchUserInfo } from '../Authentication/handlers/handleMe';
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   display: 'flex',
@@ -31,11 +37,30 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
 }));
 
 export default function AppAppBar() {
-  const [open, setOpen] = React.useState(false);
+  const [open, setOpen] = useState(false);
+  const [user, setUser] = useState(null);
+  const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+
+  useEffect(() => {
+    if (isAuthenticated()) {
+      handleFetchUserInfo()
+        .then((userInfo) => setUser(userInfo))
+        .catch(() => setUser(null));
+    }
+  }, []);
 
   const toggleDrawer = (newOpen) => () => {
     setOpen(newOpen);
+  };
+
+  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+  const handleMenuClose = () => setAnchorEl(null);
+
+  const handleLogout = () => {
+    clearTokens();
+    setUser(null);
+    navigate('/sign-in');
   };
 
   const handleNavigate = (path) => () => {
@@ -84,13 +109,42 @@ export default function AppAppBar() {
               alignItems: 'center',
             }}
           >
-            <Button color="primary" variant="text" size="small" onClick={handleNavigate('/sign-in')}>
-              Sign in
-            </Button>
-            <Button color="primary" variant="contained" size="small" onClick={handleNavigate('/sign-up')}>
-              Sign up
-            </Button>
             <ColorModeIconDropdown />
+            {user ? (
+              <Box>
+                <IconButton onClick={handleMenuOpen}>
+                  <Avatar src={user.profilePicture} alt={user.name} />
+                </IconButton>
+                <Menu
+                  anchorEl={anchorEl}
+                  open={Boolean(anchorEl)}
+                  onClose={handleMenuClose}
+                >
+                  <MenuItem disabled>{user.name}</MenuItem>
+                  <MenuItem onClick={() => navigate('/profile')}>Profile</MenuItem>
+                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                </Menu>
+              </Box>
+            ) : (
+              <>
+                <Button
+                  color="primary"
+                  variant="text"
+                  size="small"
+                  onClick={handleNavigate('/sign-in')}
+                >
+                  Sign in
+                </Button>
+                <Button
+                  color="primary"
+                  variant="contained"
+                  size="small"
+                  onClick={handleNavigate('/sign-up')}
+                >
+                  Sign up
+                </Button>
+              </>
+            )}
           </Box>
           <Box sx={{ display: { xs: 'flex', md: 'none' }, gap: 1 }}>
             <ColorModeIconDropdown size="medium" />
@@ -125,26 +179,36 @@ export default function AppAppBar() {
                 <MenuItem>FAQ</MenuItem>
                 <MenuItem>Blog</MenuItem>
                 <Divider sx={{ my: 3 }} />
-                <MenuItem>
-                  <Button
-                    color="primary"
-                    variant="contained"
-                    fullWidth
-                    onClick={handleNavigate('/sign-up')}
-                  >
-                    Sign up
-                  </Button>
-                </MenuItem>
-                <MenuItem>
-                  <Button
-                    color="primary"
-                    variant="outlined"
-                    fullWidth
-                    onClick={handleNavigate('/sign-in')}
-                  >
-                    Sign in
-                  </Button>
-                </MenuItem>
+                {user ? (
+                  <>
+                    <MenuItem disabled>{user.name}</MenuItem>
+                    <MenuItem onClick={() => navigate('/profile')}>Profile</MenuItem>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                  </>
+                ) : (
+                  <>
+                    <MenuItem>
+                      <Button
+                        color="primary"
+                        variant="contained"
+                        fullWidth
+                        onClick={() => navigate('/sign-up')}
+                      >
+                        Sign up
+                      </Button>
+                    </MenuItem>
+                    <MenuItem>
+                      <Button
+                        color="primary"
+                        variant="outlined"
+                        fullWidth
+                        onClick={() => navigate('/sign-in')}
+                      >
+                        Sign in
+                      </Button>
+                    </MenuItem>
+                  </>
+                )}
               </Box>
             </Drawer>
           </Box>

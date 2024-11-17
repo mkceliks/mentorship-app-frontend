@@ -17,18 +17,18 @@ function App() {
             <Routes>
                 <Route
                     path="/"
-                    element={!isAuthenticated ? <Blog /> : <Navigate to="/files" replace />}
+                    element={ <Blog />}
                 />
                 <Route
                     path="/sign-in"
-                    element={!isAuthenticated ? <SignInSide /> : <Navigate to="/files" replace />}
+                    element={!isAuthenticated ? <SignInSide /> : <Navigate to="/" replace />}
                 />
                 <Route
                     path="/sign-up"
-                    element={!isAuthenticated ? <SignUp /> : <Navigate to="/files" replace />}
+                    element={!isAuthenticated ? <SignUp /> : <Navigate to="/" replace />}
                 />
                 <Route
-                    path="/files"
+                    path="/"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <FileManagement />

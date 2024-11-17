@@ -1,16 +1,44 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import CssBaseline from '@mui/material/CssBaseline';
 import Stack from '@mui/material/Stack';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import SignInCard from './SignInCard';
 import Content from './Content';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 
 export default function SignInSide(props) {
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+
+      <IconButton
+        aria-label="Back"
+        onClick={handleBackClick}
+        sx={{
+          position: 'fixed',
+          top: '1rem',
+          left: '1rem',
+          zIndex: 1000,
+          backgroundColor: 'background.default',
+          boxShadow: 1,
+          '&:hover': {
+            backgroundColor: 'background.paper',
+          },
+        }}
+      >
+        <ArrowBackIcon />
+      </IconButton>
+
       <Stack
         direction="column"
         component="main"

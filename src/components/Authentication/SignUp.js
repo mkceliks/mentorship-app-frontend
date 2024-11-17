@@ -1,4 +1,5 @@
 import * as React from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -14,6 +15,8 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
 import MuiCard from '@mui/material/Card';
+import IconButton from '@mui/material/IconButton';
+import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import { GoogleIcon, FacebookIcon } from './CustomIcons';
@@ -81,7 +84,9 @@ export default function SignUp(props) {
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
   const [selectedFile, setSelectedFile] = React.useState(null);
-  const [role, setRole] = React.useState('mentee'); // Default to mentee
+  const [role, setRole] = React.useState('mentee');
+  const [error, setError] = React.useState('');
+  const navigate = useNavigate();
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -118,8 +123,10 @@ export default function SignUp(props) {
     }
 
     if (!selectedFile) {
-      alert('Please select a profile picture.');
+      setError('Please select a profile picture.');
       isValid = false;
+    } else {
+      setError('');
     }
 
     return isValid;
@@ -133,6 +140,10 @@ export default function SignUp(props) {
     document.getElementById('file-input').click();
   };
 
+  const handleBackClick = () => {
+    navigate('/');
+  };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -144,9 +155,9 @@ export default function SignUp(props) {
 
     try {
       await handleRegister(email, password, name, role, selectedFile);
-      alert(`Registration successful! You registered as a ${role}.`);
+      navigate('/');
     } catch (error) {
-      alert(error.message || 'An error occurred. Please try again.');
+      setError('An error occurred during the process. Please try again.');
     }
   };
 
@@ -154,6 +165,25 @@ export default function SignUp(props) {
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
       <ColorModeSelect sx={{ position: 'fixed', top: '1rem', right: '1rem' }} />
+
+      <IconButton
+        aria-label="Back"
+        onClick={handleBackClick}
+        sx={{
+          position: 'fixed',
+          top: '1rem',
+          left: '1rem',
+          zIndex: 1000,
+          backgroundColor: 'background.default',
+          boxShadow: 1,
+          '&:hover': {
+            backgroundColor: 'background.paper',
+          },
+        }}
+      >
+        <ArrowBackIcon />
+      </IconButton>
+
       <SignUpContainer direction="column" justifyContent="space-between">
         <Card variant="outlined">
           <Typography
@@ -256,6 +286,11 @@ export default function SignUp(props) {
               Sign up
             </Button>
           </Box>
+          {error && (
+            <Typography color="error" variant="body2" sx={{ mt: 2, textAlign: 'center' }}>
+              {error}
+            </Typography>
+          )}
           <Divider>
             <Typography sx={{ color: 'text.secondary' }}>or</Typography>
           </Divider>

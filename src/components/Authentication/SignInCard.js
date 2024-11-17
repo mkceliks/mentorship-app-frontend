@@ -1,4 +1,5 @@
-import * as React from 'react';
+import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import MuiCard from '@mui/material/Card';
@@ -10,10 +11,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { handleLogin } from "./handlers/handleLogin";
-
+import { handleLogin } from './handlers/handleLogin';
 import { styled } from '@mui/material/styles';
-
 import ForgotPassword from './ForgotPassword';
 import { GoogleIcon, FacebookIcon } from './CustomIcons';
 
@@ -36,11 +35,12 @@ const Card = styled(MuiCard)(({ theme }) => ({
 }));
 
 export default function SignInCard() {
-  const [emailError, setEmailError] = React.useState(false);
-  const [emailErrorMessage, setEmailErrorMessage] = React.useState('');
-  const [passwordError, setPasswordError] = React.useState(false);
-  const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
-  const [open, setOpen] = React.useState(false);
+  const navigate = useNavigate();
+  const [emailError, setEmailError] = useState(false);
+  const [emailErrorMessage, setEmailErrorMessage] = useState('');
+  const [passwordError, setPasswordError] = useState(false);
+  const [passwordErrorMessage, setPasswordErrorMessage] = useState('');
+  const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
     setOpen(true);
@@ -52,17 +52,18 @@ export default function SignInCard() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-  
+
     if (emailError || passwordError) {
       return;
     }
-  
+
     const data = new FormData(event.currentTarget);
     try {
+      // Call handleLogin and navigate on success
       await handleLogin(data.get('email'), data.get('password'));
-      console.log("Login successful");
+      navigate('/');
     } catch (error) {
-      console.error("Error during login:", error);
+      alert(error.message || 'An error occurred during login.');
     }
   };
 
@@ -95,8 +96,6 @@ export default function SignInCard() {
 
   return (
     <Card variant="outlined">
-      <Box sx={{ display: { xs: 'flex', md: 'none' } }}>
-      </Box>
       <Typography
         component="h1"
         variant="h4"
@@ -148,7 +147,6 @@ export default function SignInCard() {
             type="password"
             id="password"
             autoComplete="current-password"
-            autoFocus
             required
             fullWidth
             variant="outlined"
@@ -163,19 +161,19 @@ export default function SignInCard() {
         <Button type="submit" fullWidth variant="contained" onClick={validateInputs}>
           Sign in
         </Button>
-        <Typography sx={{ textAlign: 'center' }}>
-          Don&apos;t have an account?{' '}
-          <span>
-            <Link
-              href="/material-ui/getting-started/templates/sign-in/"
-              variant="body2"
-              sx={{ alignSelf: 'center' }}
-            >
-              Sign up
-            </Link>
-          </span>
-        </Typography>
       </Box>
+      <Typography sx={{ textAlign: 'center' }}>
+        Don&apos;t have an account?{' '}
+        <span>
+          <Link
+            href="/sign-up"
+            variant="body2"
+            sx={{ alignSelf: 'center' }}
+          >
+            Sign up
+          </Link>
+        </span>
+      </Typography>
       <Divider>or</Divider>
       <Box sx={{ display: 'flex', flexDirection: 'column', gap: 2 }}>
         <Button
