@@ -8,6 +8,8 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import FormLabel from '@mui/material/FormLabel';
 import FormControl from '@mui/material/FormControl';
 import Link from '@mui/material/Link';
+import RadioGroup from '@mui/material/RadioGroup';
+import Radio from '@mui/material/Radio';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import Stack from '@mui/material/Stack';
@@ -16,6 +18,7 @@ import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import { GoogleIcon, FacebookIcon } from './CustomIcons';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
+import { handleRegister } from './handlers/handleRegister';
 
 const Card = styled(MuiCard)(({ theme }) => ({
   display: 'flex',
@@ -34,6 +37,17 @@ const Card = styled(MuiCard)(({ theme }) => ({
     boxShadow:
       'hsla(220, 30%, 5%, 0.5) 0px 5px 15px 0px, hsla(220, 25%, 10%, 0.08) 0px 15px 35px -5px',
   }),
+}));
+
+const UploadBox = styled(Box)(({ theme }) => ({
+  border: `1px dashed ${theme.palette.divider}`,
+  borderRadius: theme.shape.borderRadius,
+  padding: theme.spacing(2),
+  textAlign: 'center',
+  cursor: 'pointer',
+  '&:hover': {
+    backgroundColor: theme.palette.action.hover,
+  },
 }));
 
 const SignUpContainer = styled(Stack)(({ theme }) => ({
@@ -66,6 +80,8 @@ export default function SignUp(props) {
   const [passwordErrorMessage, setPasswordErrorMessage] = React.useState('');
   const [nameError, setNameError] = React.useState(false);
   const [nameErrorMessage, setNameErrorMessage] = React.useState('');
+  const [selectedFile, setSelectedFile] = React.useState(null);
+  const [role, setRole] = React.useState('mentee'); // Default to mentee
 
   const validateInputs = () => {
     const email = document.getElementById('email');
@@ -101,21 +117,38 @@ export default function SignUp(props) {
       setNameErrorMessage('');
     }
 
+    if (!selectedFile) {
+      alert('Please select a profile picture.');
+      isValid = false;
+    }
+
     return isValid;
   };
 
-  const handleSubmit = (event) => {
-    if (nameError || emailError || passwordError) {
-      event.preventDefault();
-      return;
-    }
+  const handleFileChange = (event) => {
+    setSelectedFile(event.target.files[0]);
+  };
+
+  const handleUploadClick = () => {
+    document.getElementById('file-input').click();
+  };
+
+  const handleSubmit = async (event) => {
+    event.preventDefault();
+
+    if (!validateInputs()) return;
+
     const data = new FormData(event.currentTarget);
-    console.log({
-      name: data.get('name'),
-      lastName: data.get('lastName'),
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    const email = data.get('email');
+    const password = data.get('password');
+    const name = data.get('name');
+
+    try {
+      await handleRegister(email, password, selectedFile, role, alert);
+      alert(`Registration successful! You registered as a ${role}.`);
+    } catch (error) {
+      alert(error.message || 'An error occurred. Please try again.');
+    }
   };
 
   return (
@@ -162,7 +195,7 @@ export default function SignUp(props) {
                 variant="outlined"
                 error={emailError}
                 helperText={emailErrorMessage}
-                color={passwordError ? 'error' : 'primary'}
+                color={emailError ? 'error' : 'primary'}
               />
             </FormControl>
             <FormControl>
@@ -181,6 +214,41 @@ export default function SignUp(props) {
                 color={passwordError ? 'error' : 'primary'}
               />
             </FormControl>
+            <FormControl fullWidth>
+              <FormLabel>Profile Picture</FormLabel>
+              <UploadBox onClick={handleUploadClick}>
+                <input
+                  id="file-input"
+                  type="file"
+                  accept="image/*"
+                  style={{ display: 'none' }}
+                  onChange={handleFileChange}
+                />
+                {!selectedFile ? (
+                  <Typography color="text.secondary">Click to select a file</Typography>
+                ) : (
+                  <Typography>
+                    {selectedFile.name} ({(selectedFile.size / 1024).toFixed(2)} KB)
+                  </Typography>
+                )}
+              </UploadBox>
+            </FormControl>
+            <FormControl>
+  <FormLabel>Register as</FormLabel>
+  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+    <RadioGroup
+      value={role}
+      onChange={(e) => setRole(e.target.value)}
+      row
+      aria-label="role"
+      name="role"
+    >
+      <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+      <FormControlLabel value="mentee" control={<Radio />} label="Mentee" />
+    </RadioGroup>
+  </Box>
+</FormControl>
+
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
               label="I want to receive updates via email."
