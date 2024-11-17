@@ -108,9 +108,9 @@ export default function SignUp(props) {
       setPasswordErrorMessage('');
     }
 
-    if (!name.value || name.value.length < 1) {
+    if (!name.value || name.value.length < 2) {
       setNameError(true);
-      setNameErrorMessage('Name is required.');
+      setNameErrorMessage('Name must be at least 2 characters long.');
       isValid = false;
     } else {
       setNameError(false);
@@ -138,13 +138,12 @@ export default function SignUp(props) {
 
     if (!validateInputs()) return;
 
-    const data = new FormData(event.currentTarget);
-    const email = data.get('email');
-    const password = data.get('password');
-    const name = data.get('name');
+    const email = document.getElementById('email').value;
+    const password = document.getElementById('password').value;
+    const name = document.getElementById('name').value;
 
     try {
-      await handleRegister(email, password, selectedFile, role, alert);
+      await handleRegister(email, password, name, role, selectedFile);
       alert(`Registration successful! You registered as a ${role}.`);
     } catch (error) {
       alert(error.message || 'An error occurred. Please try again.');
@@ -234,31 +233,26 @@ export default function SignUp(props) {
               </UploadBox>
             </FormControl>
             <FormControl>
-  <FormLabel>Register as</FormLabel>
-  <Box sx={{ display: 'flex', justifyContent: 'center' }}>
-    <RadioGroup
-      value={role}
-      onChange={(e) => setRole(e.target.value)}
-      row
-      aria-label="role"
-      name="role"
-    >
-      <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-      <FormControlLabel value="mentee" control={<Radio />} label="Mentee" />
-    </RadioGroup>
-  </Box>
-</FormControl>
+              <FormLabel>Register as</FormLabel>
+              <Box sx={{ display: 'flex', justifyContent: 'center' }}>
+                <RadioGroup
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  row
+                  aria-label="role"
+                  name="role"
+                >
+                  <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
+                  <FormControlLabel value="mentee" control={<Radio />} label="Mentee" />
+                </RadioGroup>
+              </Box>
+            </FormControl>
 
             <FormControlLabel
               control={<Checkbox value="allowExtraEmails" color="primary" />}
               label="I want to receive updates via email."
             />
-            <Button
-              type="submit"
-              fullWidth
-              variant="contained"
-              onClick={validateInputs}
-            >
+            <Button type="submit" fullWidth variant="contained">
               Sign up
             </Button>
           </Box>
@@ -284,11 +278,7 @@ export default function SignUp(props) {
             </Button>
             <Typography sx={{ textAlign: 'center' }}>
               Already have an account?{' '}
-              <Link
-                href="/material-ui/getting-started/templates/sign-in/"
-                variant="body2"
-                sx={{ alignSelf: 'center' }}
-              >
+              <Link href="/sign-in" variant="body2" sx={{ alignSelf: 'center' }}>
                 Sign in
               </Link>
             </Typography>

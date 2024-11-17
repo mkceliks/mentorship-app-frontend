@@ -4,6 +4,7 @@ import SignInSide from "./components/Authentication/SignInSide";
 import SignUp from "./components/Authentication/SignUp";
 import { getAccessToken } from "./utils/config";
 // import Navbar from "./components/Navbar/Navbar";
+import Blog from "./components/Blog";
 import FileManagement from "./components/FileManagement/FileManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
 
@@ -14,10 +15,10 @@ function App() {
         <Router>
             {/* <Navbar /> */}
             <Routes>
-                {/* <Route
+                <Route
                     path="/"
-                    element={!isAuthenticated ? <Home /> : <Navigate to="/files" replace />}
-                /> */}
+                    element={!isAuthenticated ? <Blog /> : <Navigate to="/files" replace />}
+                />
                 <Route
                     path="/sign-in"
                     element={!isAuthenticated ? <SignInSide /> : <Navigate to="/files" replace />}

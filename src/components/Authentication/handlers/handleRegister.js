@@ -1,6 +1,6 @@
 import { registerUser } from "../../../api/auth/register";
 
-export const handleRegister = async (email, password, name, role, selectedFile, setMessage) => {
+export const handleRegister = async (email, password, name, role, selectedFile) => {
     if (!selectedFile) {
         alert("Please select a file to upload.");
         return;
@@ -15,14 +15,14 @@ export const handleRegister = async (email, password, name, role, selectedFile, 
         const response = await registerUser(email, password, name, role, selectedFileData);
 
         if (response.ok) {
-            setMessage("Registration successful! Please log in.");
+            alert("Registration successful! Please log in.");
         } else {
             const errorText = await response.text();
-            setMessage(`Failed to register: ${errorText}`);
+            alert(`Failed to register: ${errorText}`);
         }
     } catch (error) {
         console.error("Error during registration:", error);
-        setMessage("Registration failed. Please try again.");
+        alert("Registration failed. Please try again.");
     }
 };
 
