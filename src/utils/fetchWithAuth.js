@@ -2,41 +2,50 @@ import API_BASE_URL, { getRefreshToken, saveTokens, clearTokens, getIdToken } fr
 
 const fetchWithAuth = async (endpoint, options = {}) => {
     let token = getIdToken();
-
+  
     const headers = {
-        ...(options.headers || {}),
-        "Content-Type": "application/json",
-        ...(token && { "Authorization": `Bearer ${token}` }),
+      ...(options.headers || {}),
+      ...(token && { "Authorization": `Bearer ${token}` }),
     };
-
-    let response = await fetch(`${API_BASE_URL}${endpoint}`, {
-        ...options,
-        headers,
+  
+    const response = await fetch(`${API_BASE_URL}${endpoint}`, {
+      ...options,
+      headers,
     });
-
+  
     if (response.status === 401) {
-        const newTokens = await refreshAuthToken();
-        if (newTokens) {
-            saveTokens(newTokens);
-            token = newTokens.id_token;
-            const retryHeaders = {
-                ...(options.headers || {}),
-                "Content-Type": "application/json",
-                ...(token && { "Authorization": `Bearer ${token}` }),
-            };
-            response = await fetch(`${API_BASE_URL}${endpoint}`, {
-                ...options,
-                headers: retryHeaders,
-            });
-        } else {
-            clearTokens();
-            throw new Error("Session expired. Please log in again.");
-        }
+      const newTokens = await refreshAuthToken();
+      if (newTokens) {
+        saveTokens(newTokens);
+        token = newTokens.id_token;
+        const retryHeaders = {
+          ...(options.headers || {}),
+          ...(token && { "Authorization": `Bearer ${token}` }),
+        };
+        return await fetch(`${API_BASE_URL}${endpoint}`, {
+          ...options,
+          headers: retryHeaders,
+        });
+      } else {
+        clearTokens();
+        throw new Error("Session expired. Please log in again.");
+      }
     }
-
-    if (!response.ok) throw new Error(`Request failed: ${response.status}`);
-    return response.json();
-};
+  
+    if (!response.ok) {
+      throw new Error(`Request failed with status ${response.status}`);
+    }
+  
+    const contentType = response.headers.get("Content-Type");
+    if (options.responseType === "text" || contentType?.includes("text")) {
+      return response.text(); 
+    } else if (options.responseType === "json" || contentType?.includes("application/json")) {
+      return response.json(); 
+    } else {
+      return response.text();
+    }
+  };
+  
 
 const refreshAuthToken = async () => {
     const refreshToken = getRefreshToken();
