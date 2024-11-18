@@ -24,8 +24,8 @@ export const clearTokens = () => {
 export const isAuthenticated = () => Boolean(localStorage.getItem("access_token"));
 
 export const fetchAndSetUserInfo = async () => {
-  const accessToken = getAccessToken();
-  if (!accessToken) {
+  const idToken = getIdToken();
+  if (!idToken) {
     clearTokens();
     return null;
   }
@@ -35,7 +35,7 @@ export const fetchAndSetUserInfo = async () => {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        Authorization: `Bearer ${accessToken}`,
+        Authorization: `Bearer ${idToken}`,
       },
     });
 

@@ -1,30 +1,16 @@
-import React, { useEffect, useState } from "react";
-import { fetchAndSetUserInfo, isAuthenticated } from "../utils/config";
-import CssBaseline from "@mui/material/CssBaseline";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Typography, Box, Container, Alert, Button } from "@mui/material";
-import AppTheme from "./shared-theme/AppTheme"; 
-import AppAppBar from "./HomePage/AppBar"; 
-import Footer from "./HomePage/Footer"; 
+import CssBaseline from "@mui/material/CssBaseline";
+import AppTheme from "./shared-theme/AppTheme";
+import AppAppBar from "./HomePage/AppBar";
+import Footer from "./HomePage/Footer";
 import FileManager from "./HomePage/FileManager";
 
 export default function Blog(props) {
   const [user, setUser] = useState(null);
-  const [isVerified, setIsVerified] = useState(true);
   const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated()) {
-      fetchAndSetUserInfo()
-        .then((userInfo) => {
-          setUser(userInfo);
-          setIsVerified(userInfo?.is_verified ?? true);
-        })
-        .catch(() => {
-          setUser(null);
-        });
-    }
-  }, []);
+  const isVerified = user?.details?.is_verified ?? true;
 
   const handleVerifyEmail = () => {
     if (user?.email) {
@@ -35,7 +21,7 @@ export default function Blog(props) {
   return (
     <AppTheme {...props}>
       <CssBaseline enableColorScheme />
-      <AppAppBar />
+      <AppAppBar setUser={setUser} />
       <Container
         maxWidth="lg"
         component="main"

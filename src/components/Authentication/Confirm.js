@@ -6,13 +6,12 @@ import Typography from '@mui/material/Typography';
 import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import CssBaseline from '@mui/material/CssBaseline';
-import IconButton from '@mui/material/IconButton';
-import ArrowBackIcon from '@mui/icons-material/ArrowBack';
 import { styled } from '@mui/material/styles';
 import AppTheme from '../shared-theme/AppTheme';
 import ColorModeSelect from '../shared-theme/ColorModeSelect';
 import Stack from '@mui/material/Stack';
 import { handleConfirm } from './handlers/handleConfirm';
+import { handleResend } from './handlers/handleResend';
 
 const Card = styled(Box)(({ theme }) => ({
   display: 'flex',
@@ -71,31 +70,25 @@ export default function Confirm(props) {
   const [error, setError] = useState('');
   const [isConfirmed, setIsConfirmed] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isResending, setIsResending] = useState(false);
   const inputs = useRef([]);
   const navigate = useNavigate();
   const location = useLocation();
 
-  // Retrieve email from location state or localStorage
   const email = location.state?.email || localStorage.getItem('emailToConfirm') || '';
 
   useEffect(() => {
-    // Redirect to sign-up if no email is found
     if (!email) {
       navigate('/sign-up');
     }
   }, [email, navigate]);
 
-  const handleBackClick = () => {
-    navigate('/sign-up');
-  };
-
   const handleChange = (index, value) => {
-    if (!/^\d*$/.test(value)) return; // Allow only digits
+    if (!/^\d*$/.test(value)) return;
     const newCode = [...code];
     newCode[index] = value;
     setCode(newCode);
 
-    // Auto-focus the next input field
     if (value && index < 5) {
       inputs.current[index + 1].focus();
     }
@@ -119,10 +112,7 @@ export default function Confirm(props) {
 
     try {
       await handleConfirm(email, enteredCode);
-
-      // Clear persisted email on successful confirmation
       localStorage.removeItem('emailToConfirm');
-
       setIsConfirmed(true);
       setTimeout(() => navigate('/sign-in'), 2000);
     } catch (err) {
@@ -132,9 +122,17 @@ export default function Confirm(props) {
     }
   };
 
-  const handleResendCode = () => {
-    // Add resend logic here
-    alert('Verification code resent!');
+  const handleResendCode = async () => {
+    setIsResending(true);
+    setError('');
+    try {
+      await handleResend(email);
+      alert('Verification code has been resent!');
+    } catch (err) {
+      setError(err.message || 'Failed to resend the code. Please try again.');
+    } finally {
+      setIsResending(false);
+    }
   };
 
   return (
@@ -211,8 +209,9 @@ export default function Confirm(props) {
                 variant="body2"
                 onClick={handleResendCode}
                 sx={{ mt: 2, textAlign: 'center' }}
+                disabled={isResending} // Disable link during resend
               >
-                Resend Code
+                {isResending ? 'Resending...' : 'Resend Code'}
               </Link>
             </>
           )}

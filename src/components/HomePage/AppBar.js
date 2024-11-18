@@ -18,7 +18,7 @@ import MenuIcon from "@mui/icons-material/Menu";
 import CloseRoundedIcon from "@mui/icons-material/CloseRounded";
 import { alpha, styled } from "@mui/material/styles";
 import ColorModeIconDropdown from "../shared-theme/ColorModeIconDropdown";
-import { clearTokens, isAuthenticated } from "../../utils/config";
+import { clearTokens } from "../../utils/config";
 import { handleFetchUserInfo } from "../Authentication/handlers/handleMe";
 
 const StyledToolbar = styled(Toolbar)(({ theme }) => ({
@@ -37,187 +37,128 @@ const StyledToolbar = styled(Toolbar)(({ theme }) => ({
   padding: "8px 12px",
 }));
 
-export default function AppAppBar() {
-  const [open, setOpen] = useState(false);
-  const [user, setUser] = useState(null);
-  const [anchorEl, setAnchorEl] = useState(null);
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    if (isAuthenticated()) {
+export default function AppAppBar({ setUser }) {
+    const [open, setOpen] = useState(false);
+    const [user, setLocalUser] = useState(null);
+    const [anchorEl, setAnchorEl] = useState(null);
+    const navigate = useNavigate();
+  
+    useEffect(() => {
       handleFetchUserInfo()
-        .then((userInfo) => setUser(userInfo))
-        .catch(() => setUser(null));
-    }
-  }, []);
-
-  const toggleDrawer = (newOpen) => () => {
-    setOpen(newOpen);
-  };
-
-  const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
-  const handleMenuClose = () => setAnchorEl(null);
-
-  const handleLogout = () => {
-    clearTokens();
-    setUser(null);
-    navigate("/sign-in");
-  };
-
-  const handleNavigate = (path) => () => {
-    navigate(path);
-  };
-
-  return (
-    <AppBar
-      position="fixed"
-      enableColorOnDark
-      sx={{
-        boxShadow: 0,
-        bgcolor: "transparent",
-        backgroundImage: "none",
-        mt: "calc(var(--template-frame-height, 0px) + 28px)",
-      }}
-    >
-      <Container maxWidth="lg">
-        <StyledToolbar variant="dense" disableGutters>
-          <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}>
-            <Box sx={{ display: { xs: "none", md: "flex" } }}>
-              <Button variant="text" color="info" size="small">
-                Features
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Testimonials
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Highlights
-              </Button>
-              <Button variant="text" color="info" size="small">
-                Pricing
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                FAQ
-              </Button>
-              <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
-                Blog
-              </Button>
-            </Box>
-          </Box>
-          <Box
-            sx={{
-              display: { xs: "none", md: "flex" },
-              gap: 2,
-              alignItems: "center",
-            }}
-          >
-            <ColorModeIconDropdown />
-            {user ? (
-              <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                <Typography variant="body1" color="text.primary">
-                  {user.Email}
-                </Typography>
-                <IconButton onClick={handleMenuOpen}>
-                  <Avatar src={user.ProfilePicURL} alt={user.Name} />
-                </IconButton>
-                <Menu
-                  anchorEl={anchorEl}
-                  open={Boolean(anchorEl)}
-                  onClose={handleMenuClose}
-                >
-                  <MenuItem disabled>{user.Name}</MenuItem>
-                  <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
-                  <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                </Menu>
+        .then((userInfo) => {
+          setLocalUser(userInfo); // Set local state for AppAppBar
+          setUser(userInfo); // Pass user info to Blog.js
+        })
+        .catch(() => {
+          setLocalUser(null);
+          setUser(null); // Pass null to Blog.js if the fetch fails
+        });
+    }, [setUser]);
+  
+    const toggleDrawer = (newOpen) => () => {
+      setOpen(newOpen);
+    };
+  
+    const handleMenuOpen = (event) => setAnchorEl(event.currentTarget);
+    const handleMenuClose = () => setAnchorEl(null);
+  
+    const handleLogout = () => {
+        clearTokens();
+        setLocalUser(null);
+        setUser(null);
+        navigate("/sign-in");
+        window.location.reload();
+      };
+  
+    const handleNavigate = (path) => () => {
+      navigate(path);
+    };
+  
+    return (
+      <AppBar
+        position="fixed"
+        enableColorOnDark
+        sx={{
+          boxShadow: 0,
+          bgcolor: "transparent",
+          backgroundImage: "none",
+          mt: "calc(var(--template-frame-height, 0px) + 28px)",
+        }}
+      >
+        <Container maxWidth="lg">
+          <StyledToolbar variant="dense" disableGutters>
+            <Box sx={{ flexGrow: 1, display: "flex", alignItems: "center", px: 0 }}>
+              <Box sx={{ display: { xs: "none", md: "flex" } }}>
+                <Button variant="text" color="info" size="small">
+                  Features
+                </Button>
+                <Button variant="text" color="info" size="small">
+                  Testimonials
+                </Button>
+                <Button variant="text" color="info" size="small">
+                  Highlights
+                </Button>
+                <Button variant="text" color="info" size="small">
+                  Pricing
+                </Button>
+                <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
+                  FAQ
+                </Button>
+                <Button variant="text" color="info" size="small" sx={{ minWidth: 0 }}>
+                  Blog
+                </Button>
               </Box>
-            ) : (
-              <>
-                <Button
-                  color="primary"
-                  variant="text"
-                  size="small"
-                  onClick={handleNavigate("/sign-in")}
-                >
-                  Sign in
-                </Button>
-                <Button
-                  color="primary"
-                  variant="contained"
-                  size="small"
-                  onClick={handleNavigate("/sign-up")}
-                >
-                  Sign up
-                </Button>
-              </>
-            )}
-          </Box>
-          <Box sx={{ display: { xs: "flex", md: "none" }, gap: 1 }}>
-            <ColorModeIconDropdown size="medium" />
-            <IconButton aria-label="Menu button" onClick={toggleDrawer(true)}>
-              <MenuIcon />
-            </IconButton>
-            <Drawer
-              anchor="top"
-              open={open}
-              onClose={toggleDrawer(false)}
-              PaperProps={{
-                sx: {
-                  top: "var(--template-frame-height, 0px)",
-                },
+            </Box>
+            <Box
+              sx={{
+                display: { xs: "none", md: "flex" },
+                gap: 2,
+                alignItems: "center",
               }}
             >
-              <Box sx={{ p: 2, backgroundColor: "background.default" }}>
-                <Box
-                  sx={{
-                    display: "flex",
-                    justifyContent: "flex-end",
-                  }}
-                >
-                  <IconButton onClick={toggleDrawer(false)}>
-                    <CloseRoundedIcon />
+              <ColorModeIconDropdown />
+              {user ? (
+                <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                  <Typography variant="body1" color="text.primary">
+                    {user.email}
+                  </Typography>
+                  <IconButton onClick={handleMenuOpen}>
+                    <Avatar src={user.details.ProfilePicURL} alt={user.details.Name} />
                   </IconButton>
-                </Box>
-                <MenuItem>Features</MenuItem>
-                <MenuItem>Testimonials</MenuItem>
-                <MenuItem>Highlights</MenuItem>
-                <MenuItem>Pricing</MenuItem>
-                <MenuItem>FAQ</MenuItem>
-                <MenuItem>Blog</MenuItem>
-                <Divider sx={{ my: 3 }} />
-                {user ? (
-                  <>
-                    <MenuItem disabled>{user.Name}</MenuItem>
+                  <Menu
+                    anchorEl={anchorEl}
+                    open={Boolean(anchorEl)}
+                    onClose={handleMenuClose}
+                  >
+                    <MenuItem disabled>{user.details.Name}</MenuItem>
                     <MenuItem onClick={() => navigate("/profile")}>Profile</MenuItem>
                     <MenuItem onClick={handleLogout}>Logout</MenuItem>
-                  </>
-                ) : (
-                  <>
-                    <MenuItem>
-                      <Button
-                        color="primary"
-                        variant="contained"
-                        fullWidth
-                        onClick={() => navigate("/sign-up")}
-                      >
-                        Sign up
-                      </Button>
-                    </MenuItem>
-                    <MenuItem>
-                      <Button
-                        color="primary"
-                        variant="outlined"
-                        fullWidth
-                        onClick={() => navigate("/sign-in")}
-                      >
-                        Sign in
-                      </Button>
-                    </MenuItem>
-                  </>
-                )}
-              </Box>
-            </Drawer>
-          </Box>
-        </StyledToolbar>
-      </Container>
-    </AppBar>
-  );
-}
+                  </Menu>
+                </Box>
+              ) : (
+                <>
+                  <Button
+                    color="primary"
+                    variant="text"
+                    size="small"
+                    onClick={handleNavigate("/sign-in")}
+                  >
+                    Sign in
+                  </Button>
+                  <Button
+                    color="primary"
+                    variant="contained"
+                    size="small"
+                    onClick={handleNavigate("/sign-up")}
+                  >
+                    Sign up
+                  </Button>
+                </>
+              )}
+            </Box>
+          </StyledToolbar>
+        </Container>
+      </AppBar>
+    );
+  }
+  
