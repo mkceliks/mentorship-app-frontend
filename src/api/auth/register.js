@@ -1,13 +1,15 @@
 import API_BASE_URL from "../../utils/config";
 
-export const registerUser = async (email, password, selectedFileData) => {
+export const registerUser = async (email, password, name, role, selectedFileData) => {
     const { file, base64File } = selectedFileData;
 
     const requestBody = {
         email,
         password,
+        name,
+        role,
         file_name: file.name,
-        profile_picture: base64File.split(",")[1],
+        profile_picture: base64File.split(",")[1], 
     };
 
     console.log("Request Body:", JSON.stringify(requestBody, null, 2));
@@ -22,7 +24,7 @@ export const registerUser = async (email, password, selectedFileData) => {
     });
 
     if (!response.ok) {
-        throw new Error(`Failed to register. Status: ${response.status} ${response.statusText}`);
+        throw new Error(`Failed to register. Status: ${response.status} ${response.body}`);
     }
 
     return response;

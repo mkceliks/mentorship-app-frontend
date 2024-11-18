@@ -1,34 +1,34 @@
 import React from "react";
 import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
-import Navbar from "./components/Navbar/Navbar";
-import Home from "./components/Home";
-import Login from "./components/Authentication/Login";
-import Register from "./components/Authentication/Register";
+import SignInSide from "./components/Authentication/SignInSide";
+import SignUp from "./components/Authentication/SignUp";
+import { getAccessToken } from "./utils/config";
+// import Navbar from "./components/Navbar/Navbar";
+import Blog from "./components/Blog";
 import FileManagement from "./components/FileManagement/FileManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
-import { getAccessToken } from "./utils/config";
 
 function App() {
     const isAuthenticated = !!getAccessToken();
 
     return (
         <Router>
-            <Navbar />
+            {/* <Navbar /> */}
             <Routes>
                 <Route
                     path="/"
-                    element={!isAuthenticated ? <Home /> : <Navigate to="/files" replace />}
+                    element={ <Blog />}
                 />
                 <Route
-                    path="/login"
-                    element={!isAuthenticated ? <Login /> : <Navigate to="/files" replace />}
+                    path="/sign-in"
+                    element={!isAuthenticated ? <SignInSide /> : <Navigate to="/" replace />}
                 />
                 <Route
-                    path="/register"
-                    element={!isAuthenticated ? <Register /> : <Navigate to="/files" replace />}
+                    path="/sign-up"
+                    element={!isAuthenticated ? <SignUp /> : <Navigate to="/" replace />}
                 />
                 <Route
-                    path="/files"
+                    path="/"
                     element={
                         <ProtectedRoute isAuthenticated={isAuthenticated}>
                             <FileManagement />
@@ -40,5 +40,4 @@ function App() {
         </Router>
     );
 }
-
 export default App;
