@@ -1,15 +1,22 @@
-import API_BASE_URL from "../../utils/config";
+import fetchWithAuth from "../../utils/fetchWithAuth";
 
 export const downloadFile = async (fileKey) => {
-    const response = await fetch(`${API_BASE_URL}/download?file_name=${encodeURIComponent(fileKey)}`);
-    
-    if (!response.ok) {
-        const errorText = await response.text();
-        throw new Error(`Failed to download file: ${errorText}`);
+    try {
+      const response = await fetchWithAuth(`/download?file_name=${encodeURIComponent(fileKey)}`, {
+        headers: {
+          Accept: "application/octet-stream",
+        },
+        responseType: "text", 
+      });
+  
+      const base64Data = response; 
+      const contentType = "application/octet-stream"; 
+  
+      return { base64Data, contentType };
+    } catch (error) {
+      console.error("Error fetching the file:", error);
+      throw new Error("Failed to download file");
     }
-
-    const base64Data = await response.text();
-    const contentType = response.headers.get("Content-Type") || "application/octet-stream";
-
-    return { base64Data, contentType };
-};
+  };
+  
+  
