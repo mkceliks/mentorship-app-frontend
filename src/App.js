@@ -7,37 +7,42 @@ import { getAccessToken } from "./utils/config";
 import Blog from "./components/Blog";
 import FileManagement from "./components/FileManagement/FileManagement";
 import ProtectedRoute from "./components/ProtectedRoute";
+import Confirm from './components/Authentication/Confirm';
 
-function App() {
+const App = () => {
     const isAuthenticated = !!getAccessToken();
-
+    const emailToConfirm = localStorage.getItem('emailToConfirm');
+  
     return (
-        <Router>
-            {/* <Navbar /> */}
-            <Routes>
-                <Route
-                    path="/"
-                    element={ <Blog />}
-                />
-                <Route
-                    path="/sign-in"
-                    element={!isAuthenticated ? <SignInSide /> : <Navigate to="/" replace />}
-                />
-                <Route
-                    path="/sign-up"
-                    element={!isAuthenticated ? <SignUp /> : <Navigate to="/" replace />}
-                />
-                <Route
-                    path="/"
-                    element={
-                        <ProtectedRoute isAuthenticated={isAuthenticated}>
-                            <FileManagement />
-                        </ProtectedRoute>
-                    }
-                />
-                <Route path="*" element={<Navigate to="/" replace />} />
-            </Routes>
-        </Router>
+      <Router>
+        <Routes>
+          <Route path="/" element={<Blog />} />
+          <Route
+            path="/sign-in"
+            element={!isAuthenticated ? <SignInSide /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/sign-up"
+            element={!isAuthenticated ? <SignUp /> : <Navigate to="/" replace />}
+          />
+          <Route
+            path="/confirm"
+            element={<Confirm />}
+          />
+          <Route
+            path="*"
+            element={
+              emailToConfirm ? (
+                <Navigate to="/confirm" replace />
+              ) : (
+                <Navigate to="/" replace />
+              )
+            }
+          />
+        </Routes>
+      </Router>
     );
-}
-export default App;
+  };
+  
+  export default App;
+  
