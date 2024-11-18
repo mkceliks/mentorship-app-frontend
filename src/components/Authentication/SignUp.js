@@ -146,20 +146,24 @@ export default function SignUp(props) {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+  
     if (!validateInputs()) return;
-
+  
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     const name = document.getElementById('name').value;
-
+  
     try {
       await handleRegister(email, password, name, role, selectedFile);
-      navigate('/');
+  
+      localStorage.setItem('emailToConfirm', email);
+  
+      navigate('/confirm');
     } catch (error) {
       setError('An error occurred during the process. Please try again.');
     }
   };
+  
 
   return (
     <AppTheme {...props}>
