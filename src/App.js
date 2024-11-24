@@ -5,8 +5,6 @@ import SignUp from "./components/Authentication/SignUp";
 import { getAccessToken } from "./utils/config";
 // import Navbar from "./components/Navbar/Navbar";
 import Blog from "./components/Blog";
-import FileManagement from "./components/FileManagement/FileManagement";
-import ProtectedRoute from "./components/ProtectedRoute";
 import Confirm from './components/Authentication/Confirm';
 
 const App = () => {

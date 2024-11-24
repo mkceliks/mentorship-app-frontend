@@ -95,7 +95,7 @@ export default function FileManager() {
                       <UploadFileIcon />
                     </Avatar>
                     <ListItemText
-                      primary={file.key}
+                      primary={file.item_name}
                       secondary={`Size: ${(file.size / 1024).toFixed(2)} KB`}
                     />
                   </Box>
