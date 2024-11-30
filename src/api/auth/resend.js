@@ -5,7 +5,6 @@ export const resendCode = async (email) => {
     email,
   };
 
-  console.log("Request Body for Resend:", JSON.stringify(requestBody, null, 2));
 
   const response = await fetch(`${API_BASE_URL}/resend`, {
     method: "POST",

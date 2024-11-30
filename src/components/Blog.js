@@ -38,9 +38,10 @@ export default function Blog(props) {
             </Button>
           </Alert>
         )}
-        {user && isVerified && <FileManager />}
+        {user && isVerified && <FileManager user={user} />}
       </Container>
       <Footer />
     </AppTheme>
   );
 }
+

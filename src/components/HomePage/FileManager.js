@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { fetchFiles } from "../FileManagement/handlers/fetchFiles";
 import { handleDownload } from "../FileManagement/handlers/handleDownload";
-// import { handleDelete } from "../FileManagement/handlers/handleDelete";
 import { handleUpload } from "../FileManagement/handlers/handleUpload";
 import { handleFileChange } from "../FileManagement/handlers/handleFileChange";
 import { isAuthenticated } from "../../utils/config";
@@ -19,7 +18,6 @@ import {
   Avatar,
 } from "@mui/material";
 import { styled } from "@mui/material/styles";
-// import DeleteIcon from "@mui/icons-material/Delete";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import DownloadIcon from "@mui/icons-material/Download";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
@@ -35,7 +33,7 @@ const UploadBox = styled(Box)(({ theme }) => ({
   },
 }));
 
-export default function FileManager() {
+export default function FileManager({ user }) {
   const [files, setFiles] = useState([]);
   const [selectedFile, setSelectedFile] = useState(null);
   const [loading, setLoading] = useState(false);
@@ -67,7 +65,7 @@ export default function FileManager() {
       }}
     >
       <Typography variant="h5" gutterBottom>
-        File Management
+        File Management for {user.details?.Name || "User"}
       </Typography>
 
       {loading ? (
@@ -108,14 +106,6 @@ export default function FileManager() {
                     >
                       <DownloadIcon />
                     </IconButton>
-                    {/* <IconButton
-                      edge="end"
-                      aria-label="delete"
-                      color="error"
-                      onClick={() => handleDelete(file.key, setFiles)}
-                    >
-                      <DeleteIcon />
-                    </IconButton> */}
                   </CardActions>
                 </Card>
               ))}
@@ -159,7 +149,7 @@ export default function FileManager() {
                   alert("Please select a file before uploading.");
                   return;
                 }
-                handleUpload(selectedFile, setFiles, setSelectedFile, setLoading);
+                handleUpload(selectedFile, setFiles, setSelectedFile, setLoading, user.email);
                 setSelectedFile(null);
               }}
             >

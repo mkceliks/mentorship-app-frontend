@@ -6,7 +6,6 @@ export const confirmUser = async (email, code) => {
     code,
   };
 
-  console.log("Request Body:", JSON.stringify(requestBody, null, 2));
 
   const response = await fetch(`${API_BASE_URL}/confirm`, {
     method: "POST",

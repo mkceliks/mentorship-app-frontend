@@ -1,3 +1,5 @@
+import { jwtDecode } from "jwt-decode";
+
 const API_BASE_URL =
   process.env.REACT_APP_API_URL?.trim() || "https://3tr7zaks42.execute-api.us-east-1.amazonaws.com/staging";
 
@@ -11,7 +13,23 @@ export const saveTokens = (tokens) => {
 
 export const getAccessToken = () => localStorage.getItem("access_token");
 
-export const getIdToken = () => localStorage.getItem("id_token");
+export const isTokenExpired = (token) => {
+  try {
+    const { exp } = jwtDecode(token);
+    return Date.now() >= exp * 1000; 
+  } catch (e) {
+    return true;
+  }
+};
+
+export const getIdToken = () => {
+  const token = localStorage.getItem("id_token");
+  if (!token || isTokenExpired(token)) {
+    clearTokens();
+    return null;
+  }
+  return token;
+};
 
 export const getRefreshToken = () => localStorage.getItem("refresh_token");
 

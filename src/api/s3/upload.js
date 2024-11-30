@@ -1,18 +1,18 @@
 import API_BASE_URL from "../../utils/config";
 
-export const uploadFile = async (file, token) => {
+export const uploadFile = async (file,email) => {
     const base64File = await toBase64(file);
 
     const response = await fetch(`${API_BASE_URL}/upload`, {
         method: "POST",
         headers: {
-            "Authorization": `Bearer ${token}`,
             "Content-Type": "application/json",
             "x-file-content-type": file.type,
         },
         body: JSON.stringify({
             file_name: file.name,
             file_content: base64File.split(',')[1],
+            email: email,
         }),
     });
 

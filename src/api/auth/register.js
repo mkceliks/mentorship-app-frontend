@@ -12,7 +12,6 @@ export const registerUser = async (email, password, name, role, selectedFileData
         profile_picture: base64File.split(",")[1], 
     };
 
-    console.log("Request Body:", JSON.stringify(requestBody, null, 2));
 
     const response = await fetch(`${API_BASE_URL}/register`, {
         method: "POST",

@@ -276,8 +276,8 @@ export default function SignUp(props) {
                   aria-label="role"
                   name="role"
                 >
-                  <FormControlLabel value="mentor" control={<Radio />} label="Mentor" />
-                  <FormControlLabel value="mentee" control={<Radio />} label="Mentee" />
+                  <FormControlLabel value="Mentor" control={<Radio />} label="Mentor" />
+                  <FormControlLabel value="Mentee" control={<Radio />} label="Mentee" />
                 </RadioGroup>
               </Box>
             </FormControl>

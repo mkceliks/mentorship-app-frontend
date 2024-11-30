@@ -44,12 +44,12 @@ export default function AppAppBar({ setUser }) {
     useEffect(() => {
       handleFetchUserInfo()
         .then((userInfo) => {
-          setLocalUser(userInfo); // Set local state for AppAppBar
-          setUser(userInfo); // Pass user info to Blog.js
+          setLocalUser(userInfo); 
+          setUser(userInfo); 
         })
         .catch(() => {
           setLocalUser(null);
-          setUser(null); // Pass null to Blog.js if the fetch fails
+          setUser(null); 
         });
     }, [setUser]);
   

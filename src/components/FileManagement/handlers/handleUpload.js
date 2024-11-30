@@ -1,17 +1,15 @@
 import { uploadFile } from "../../../api/s3";
 import { fetchFiles } from "./fetchFiles";
-import { getIdToken } from "../../../utils/config";
 
-export const handleUpload = async (selectedFile, setFiles, setSelectedFile, setLoading) => {
+export const handleUpload = async (selectedFile, setFiles, setSelectedFile, setLoading, email) => {
     if (!selectedFile) {
         alert("Please select a file to upload.");
         return;
     }
 
     setLoading(true);
-    const token = getIdToken();
     try {
-        const response = await uploadFile(selectedFile, token);
+        const response = await uploadFile(selectedFile, email);
 
         if (response.ok) {
             alert("File uploaded successfully!");
